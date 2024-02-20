@@ -1,0 +1,97 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# En este pequeño proyecto, analizamos unas ventas de una compañia
+# de productos higienicos con la finalidad de utilizar e introducirnos
+# en la libreria matplotlib
+
+newdf = pd.read_csv("company_sales_data.csv")
+newdf.head(5)
+# Del dataframe obtenemos dos columnas que queremos graficar y las hacemos listas
+profit = newdf['total_profit'].tolist()
+month = newdf['month_number'].tolist()
+# En la gráfica, cambiaremos el formato como referencia
+plt.figure(0) 
+plt.plot(month, profit, color='r', marker='o', markerfacecolor='k', 
+      linestyle='--', linewidth=3, label='profit data')
+plt.xlabel('Month number')
+plt.ylabel('Profit in dollar')
+plt.xticks(month)
+plt.title('Company profit per month')
+plt.yticks([0, 100000, 200000, 300000, 400000, 500000])
+plt.legend(loc = 'lower center')
+plt.savefig('Profit in dollar.png')
+
+# Agrupación de ventas de productos en un mismo gráfico
+units = []
+labels = []
+for cols in newdf:
+    units.append(newdf[cols].tolist())
+    labels.append(cols)
+n = len(units) - 2
+for x in range(n):
+    if x != 0:
+        plt.plot(units[0], units[x], marker='o', linewidth=3, label=labels[x])
+plt.figure(1) 
+plt.xlabel('Month Number')
+plt.ylabel('Sales units in number')
+plt.legend(loc='upper left')
+plt.xticks(units[0])
+plt.yticks([0, 2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000])
+plt.title('Sales data')
+plt.savefig('Sales units in number.png')
+# Scatter plot dde un solo producto
+plt.figure(2) 
+plt.scatter(month, newdf['toothpaste'])
+plt.xticks(month)
+plt.yticks([2000, 4000, 6000, 8000, 10000])
+plt.grid(True, linewidth= 1, linestyle="--")
+plt.savefig('scatter-tooth.png')
+# Comparación de ventas de dos productos con gráfico de barras
+plt.figure(3) 
+plt.bar(month, newdf['facewash'], width= 0.25, align='edge')
+plt.bar(month, newdf['facecream'], width= -0.25, align= 'edge')
+plt.xticks(month)
+yticks = np.arange(0, 4000, 500)
+plt.yticks(yticks)
+plt.grid(True, linewidth= 1, linestyle="--")
+plt.savefig('facewash vs facecream')
+# Histograma del profit
+profit = []
+profit_range = [150000, 175000, 200000, 225000, 250000, 300000, 350000]
+profit_n = newdf['total_profit'].tolist()
+plt.figure(4) 
+plt.hist(profit_n, profit_range)
+plt.savefig('profit range')
+# Comparación de dos productos con subplots
+f, subs = plt.subplots(2, sharex=True) # f refiere a figuta, subs a lo que habrá en las figuras
+subs[0].plot(month, newdf['facewash'], color='k', marker='o')
+subs[0].set_title('Facewash')
+subs[1].plot(month, newdf['bathingsoap'], color='r', marker='o')
+subs[1].set_title('Bath soap')
+plt.figure(5) 
+plt.xticks(month)
+plt.xlabel('Month Number')
+plt.ylabel('Sales units in number')
+plt.savefig('subplots')
+# Apilación de ventas en un solo gráfico "Stackplot"
+units = []
+labels = []
+for cols in newdf:
+    units.append(newdf[cols].tolist())
+    labels.append(cols)
+
+for x in range(n):
+    if x != 0:
+        plt.plot(units[0], units[x], linewidth=0.1, label=labels[x]) 
+
+plt.figure(6) 
+plt.stackplot(units[0], units[1], units[2], units[3], units[4], units[5], units[6], colors=['m','c','r','k','g','y'])
+plt.xlabel('Month Number')
+plt.ylabel('Sales units in number')
+plt.legend(loc='upper left')
+plt.xticks(units[0])
+plt.yticks(np.arange(0, 35000, 5000))
+plt.title('Sales data')
+plt.savefig('stackplot')
